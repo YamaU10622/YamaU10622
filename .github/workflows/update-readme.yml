@@ -1,0 +1,29 @@
+# .github/workflows/update-readme.yml
+
+name: Update README stats daily
+
+on:
+  schedule:
+    - cron: '0 3 * * *'  # JST12:00に実行（UTC+0の3時）
+  workflow_dispatch:
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Update README
+        run: |
+          # update cache_buster in README
+          DATE=$(date +"%Y%m%d%H%M%S")
+          sed -i "s/cache_buster=[0-9]*/cache_buster=$DATE/" README.md
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "Update README cache_buster: ${DATE}" || echo "No changes"
+          git push
