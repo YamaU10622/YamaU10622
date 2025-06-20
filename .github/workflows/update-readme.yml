@@ -1,4 +1,5 @@
-# .github/workflows/update-readme.yml
+permissions: 
+  contents: write
 
 name: Update README stats daily
 
